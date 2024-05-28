@@ -26,9 +26,9 @@ def create_system_info_tab(cpu_utilization_texts):
 
     system_info_container = ft.Container(
         content=system_info_column,
-        border=ft.border.all(1, color=ft.colors.BLACK),
+        #border=ft.border.all(1, color=ft.colors.BLACK),
         padding=5,
-        border_radius=5,
+        #border_radius=5,
         alignment=ft.alignment.center
     )
 
@@ -47,9 +47,9 @@ def create_system_info_tab(cpu_utilization_texts):
 
     cpu_utilization_container = ft.Container(
         content=cpu_utilization_column,
-        border=ft.border.all(1, color=ft.colors.BLACK),
+        #border=ft.border.all(1, color=ft.colors.BLACK),
         padding=5,
-        border_radius=5,
+        #border_radius=5,
         alignment=ft.alignment.center
     )
 
