@@ -82,6 +82,14 @@ def main(page: ft.Page):
         spacing=10
     )
 
+    system_info_container = ft.Container(
+        content=system_info_column,
+        border=ft.border.all(1, color=ft.colors.BLACK),
+        padding=10,
+        border_radius=5,
+        alignment=ft.alignment.center
+    )
+
     # CPU Utilization Column
     cpu_utilization_column = ft.Column(
         [
@@ -107,11 +115,19 @@ def main(page: ft.Page):
     refresh_button = ft.ElevatedButton(text="Refresh CPU Utilization", on_click=refresh_cpu_utilization)
     cpu_utilization_column.controls.append(refresh_button)
 
-    # Main Row to hold both columns
+    cpu_utilization_container = ft.Container(
+        content=cpu_utilization_column,
+        border=ft.border.all(1, color=ft.colors.BLACK),
+        padding=10,
+        border_radius=5,
+        alignment=ft.alignment.center
+    )
+
+    # Main Row to hold both containers
     main_row = ft.Row(
         [
-            system_info_column,
-            cpu_utilization_column
+            system_info_container,
+            cpu_utilization_container
         ],
         alignment=ft.MainAxisAlignment.CENTER,
         spacing=50
