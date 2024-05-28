@@ -3,7 +3,6 @@ import platform
 import flet as ft
 import threading
 
-
 def get_cpu_info():
     cpu_count = psutil.cpu_count(logical=False)
     cpu_count_logical = psutil.cpu_count(logical=True)
@@ -21,7 +20,6 @@ def get_cpu_info():
 
     return cpu_info
 
-
 def get_memory_info():
     virtual_memory = psutil.virtual_memory()
     total_memory_gb = virtual_memory.total / (1024.0 ** 3)
@@ -32,7 +30,6 @@ def get_memory_info():
 
     return memory_info
 
-
 def get_os_info():
     os_info = {
         "platform": platform.system(),
@@ -42,19 +39,15 @@ def get_os_info():
 
     return os_info
 
-
 def get_cpu_utilization():
     cpu_utilization = psutil.cpu_percent(interval=1, percpu=True)
     return cpu_utilization
 
-
 def create_text_component(label, value):
     return ft.Text(f"{label}: {value}", size=14, weight=ft.FontWeight.NORMAL)
 
-
 def create_heading(text):
     return ft.Text(text, size=20, weight=ft.FontWeight.BOLD, color=ft.colors.BLUE_500)
-
 
 def create_system_info_tab(cpu_utilization_texts):
     os_info = get_os_info()
@@ -118,7 +111,6 @@ def create_system_info_tab(cpu_utilization_texts):
 
     return main_row
 
-
 def create_process_list_tab():
     process_column = ft.Column(
         [
@@ -139,7 +131,6 @@ def create_process_list_tab():
 
     return process_container
 
-
 def main(page: ft.Page):
     page.title = "System Monitor"
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
@@ -156,7 +147,16 @@ def main(page: ft.Page):
         expand=1
     )
 
-    page.add(tabs)
+    footer = ft.Container(
+        content=ft.Text("Footer Text", size=16),
+        padding=10,
+        alignment=ft.alignment.center,
+        bgcolor=ft.colors.WHITE10,
+        border=ft.border.all(1, color=ft.colors.BLACK),
+        height=50
+    )
+
+    page.add(ft.Column([tabs, footer], expand=True))
 
     def update_cpu_utilization():
         if tabs.selected_index == 0:  # Only update if System Info tab is active
@@ -168,7 +168,6 @@ def main(page: ft.Page):
 
     # Start the periodic update
     threading.Timer(1, update_cpu_utilization).start()
-
 
 if __name__ == "__main__":
     ft.app(target=main)
