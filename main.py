@@ -21,7 +21,7 @@ def main(page: ft.Page):
 
     footer = ft.Container(
         content=ft.Text("Footer Text", size=16),
-        padding=10,
+        padding=25,
         alignment=ft.alignment.center,
         bgcolor=ft.colors.WHITE10,
         border=ft.border.all(1, color=ft.colors.BLACK),

@@ -1,6 +1,8 @@
 import flet as ft
 from system_info import get_os_info, get_memory_info, get_cpu_info, get_cpu_utilization
 from ui_components import create_text_component, create_heading
+import psutil
+from util import get_process_list
 
 def create_system_info_tab(cpu_utilization_texts):
     os_info = get_os_info()
@@ -26,9 +28,9 @@ def create_system_info_tab(cpu_utilization_texts):
 
     system_info_container = ft.Container(
         content=system_info_column,
-        #border=ft.border.all(1, color=ft.colors.BLACK),
+        # border=ft.border.all(1, color=ft.colors.BLACK),
         padding=5,
-        #border_radius=5,
+        # border_radius=5,
         alignment=ft.alignment.center
     )
 
@@ -47,9 +49,9 @@ def create_system_info_tab(cpu_utilization_texts):
 
     cpu_utilization_container = ft.Container(
         content=cpu_utilization_column,
-        #border=ft.border.all(1, color=ft.colors.BLACK),
+        # border=ft.border.all(1, color=ft.colors.BLACK),
         padding=5,
-        #border_radius=5,
+        # border_radius=5,
         alignment=ft.alignment.center
     )
 
@@ -65,13 +67,36 @@ def create_system_info_tab(cpu_utilization_texts):
     return main_row
 
 def create_process_list_tab():
+    process_data = get_process_list()
+    
     process_column = ft.Column(
         [
             create_heading("Current Running Processes"),
-            ft.Text("This page will display the list of current running processes.")
+            ft.DataTable(
+                columns=[
+                    ft.DataColumn(ft.Text("PID")),
+                    ft.DataColumn(ft.Text("Name")),
+                    ft.DataColumn(ft.Text("Status")),
+                    ft.DataColumn(ft.Text("CPU %")),
+                    ft.DataColumn(ft.Text("Memory")),
+                ],
+                rows=[
+                    ft.DataRow(
+                        cells=[
+                            ft.DataCell(ft.Text(str(process[0]))),
+                            ft.DataCell(ft.Text(process[1])),
+                            ft.DataCell(ft.Text(process[2])),
+                            ft.DataCell(ft.Text(f"{process[3]}%")),
+                            ft.DataCell(ft.Text(f"{process[4] / (1024 ** 2):.2f} MB")),
+                        ]
+                    ) for process in process_data
+                ]
+            )
         ],
         alignment=ft.MainAxisAlignment.CENTER,
-        spacing=5
+        spacing=5,
+        expand=1,
+        scroll=ft.ScrollMode.ALWAYS
     )
 
     process_container = ft.Container(
