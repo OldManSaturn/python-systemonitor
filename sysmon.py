@@ -1,6 +1,7 @@
 import psutil
 import platform
 import flet as ft
+import threading
 
 
 def get_cpu_info():
@@ -105,15 +106,12 @@ def main(page: ft.Page):
         cpu_utilization_texts.append(cpu_text)
         cpu_utilization_column.controls.append(cpu_text)
 
-    # Refresh button to update CPU utilization
-    def refresh_cpu_utilization(e):
+    def update_cpu_utilization():
         new_cpu_utilization = get_cpu_utilization()
         for i, utilization in enumerate(new_cpu_utilization):
             cpu_utilization_texts[i].value = f"Core {i}: {utilization}%"
         page.update()
-
-    refresh_button = ft.ElevatedButton(text="Refresh CPU Utilization", on_click=refresh_cpu_utilization)
-    cpu_utilization_column.controls.append(refresh_button)
+        threading.Timer(1, update_cpu_utilization).start()
 
     cpu_utilization_container = ft.Container(
         content=cpu_utilization_column,
@@ -134,6 +132,9 @@ def main(page: ft.Page):
     )
 
     page.add(main_row)
+
+    # Start the periodic update
+    threading.Timer(1, update_cpu_utilization).start()
 
 
 if __name__ == "__main__":
