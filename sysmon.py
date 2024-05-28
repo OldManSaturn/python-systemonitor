@@ -48,7 +48,11 @@ def get_cpu_utilization():
 
 
 def create_text_component(label, value):
-    return ft.Text(f"{label}: {value}")
+    return ft.Text(f"{label}: {value}", size=14, weight=ft.FontWeight.NORMAL)
+
+
+def create_heading(text):
+    return ft.Text(text, size=20, weight=ft.FontWeight.BOLD, color=ft.colors.BLUE_500)
 
 
 def main(page: ft.Page):
@@ -64,6 +68,7 @@ def main(page: ft.Page):
     # System Info Column
     system_info_column = ft.Column(
         [
+            create_heading("System Information"),
             create_text_component("Operating System", os_info['platform']),
             create_text_component("OS Release", os_info['platform_release']),
             create_text_component("OS Version", os_info['platform_version']),
@@ -73,15 +78,17 @@ def main(page: ft.Page):
             create_text_component("CPU Architecture", cpu_info['cpu_architecture']),
             create_text_component("CPU Model", cpu_info['cpu_model']),
         ],
-        alignment=ft.MainAxisAlignment.CENTER
+        alignment=ft.MainAxisAlignment.CENTER,
+        spacing=10
     )
 
     # CPU Utilization Column
     cpu_utilization_column = ft.Column(
         [
-            ft.Text("CPU Utilization Per Core")
+            create_heading("CPU Utilization Per Core")
         ],
-        alignment=ft.MainAxisAlignment.CENTER
+        alignment=ft.MainAxisAlignment.CENTER,
+        spacing=10
     )
 
     cpu_utilization_texts = []
