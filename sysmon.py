@@ -56,17 +56,12 @@ def create_heading(text):
     return ft.Text(text, size=20, weight=ft.FontWeight.BOLD, color=ft.colors.BLUE_500)
 
 
-def main(page: ft.Page):
-    page.title = "System Monitor"
-    page.vertical_alignment = ft.MainAxisAlignment.CENTER
-    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
-
+def create_system_info_tab(cpu_utilization_texts):
     os_info = get_os_info()
     memory_info = get_memory_info()
     cpu_info = get_cpu_info()
     cpu_utilization = get_cpu_utilization()
 
-    # System Info Column
     system_info_column = ft.Column(
         [
             create_heading("System Information"),
@@ -80,48 +75,38 @@ def main(page: ft.Page):
             create_text_component("CPU Model", cpu_info['cpu_model']),
         ],
         alignment=ft.MainAxisAlignment.CENTER,
-        spacing=10
+        spacing=5
     )
 
     system_info_container = ft.Container(
         content=system_info_column,
         border=ft.border.all(1, color=ft.colors.BLACK),
-        padding=10,
+        padding=5,
         border_radius=5,
         alignment=ft.alignment.center
     )
 
-    # CPU Utilization Column
     cpu_utilization_column = ft.Column(
         [
             create_heading("CPU Utilization Per Core")
         ],
         alignment=ft.MainAxisAlignment.CENTER,
-        spacing=10
+        spacing=5
     )
 
-    cpu_utilization_texts = []
     for i, utilization in enumerate(cpu_utilization):
         cpu_text = create_text_component(f"Core {i}", f"{utilization}%")
         cpu_utilization_texts.append(cpu_text)
         cpu_utilization_column.controls.append(cpu_text)
 
-    def update_cpu_utilization():
-        new_cpu_utilization = get_cpu_utilization()
-        for i, utilization in enumerate(new_cpu_utilization):
-            cpu_utilization_texts[i].value = f"Core {i}: {utilization}%"
-        page.update()
-        threading.Timer(1, update_cpu_utilization).start()
-
     cpu_utilization_container = ft.Container(
         content=cpu_utilization_column,
         border=ft.border.all(1, color=ft.colors.BLACK),
-        padding=10,
+        padding=5,
         border_radius=5,
         alignment=ft.alignment.center
     )
 
-    # Main Row to hold both containers
     main_row = ft.Row(
         [
             system_info_container,
@@ -131,7 +116,55 @@ def main(page: ft.Page):
         spacing=50
     )
 
-    page.add(main_row)
+    return main_row
+
+
+def create_process_list_tab():
+    process_column = ft.Column(
+        [
+            create_heading("Current Running Processes"),
+            ft.Text("This page will display the list of current running processes.")
+        ],
+        alignment=ft.MainAxisAlignment.CENTER,
+        spacing=5
+    )
+
+    process_container = ft.Container(
+        content=process_column,
+        border=ft.border.all(1, color=ft.colors.BLACK),
+        padding=5,
+        border_radius=5,
+        alignment=ft.alignment.center
+    )
+
+    return process_container
+
+
+def main(page: ft.Page):
+    page.title = "System Monitor"
+    page.vertical_alignment = ft.MainAxisAlignment.CENTER
+    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+
+    cpu_utilization_texts = []
+
+    tabs = ft.Tabs(
+        selected_index=0,
+        tabs=[
+            ft.Tab(text="System Info", content=create_system_info_tab(cpu_utilization_texts)),
+            ft.Tab(text="Running Processes", content=create_process_list_tab())
+        ],
+        expand=1
+    )
+
+    page.add(tabs)
+
+    def update_cpu_utilization():
+        if tabs.selected_index == 0:  # Only update if System Info tab is active
+            new_cpu_utilization = get_cpu_utilization()
+            for i, utilization in enumerate(new_cpu_utilization):
+                cpu_utilization_texts[i].value = f"Core {i}: {utilization}%"
+            page.update()
+        threading.Timer(1, update_cpu_utilization).start()
 
     # Start the periodic update
     threading.Timer(1, update_cpu_utilization).start()
